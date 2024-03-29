@@ -10,9 +10,4 @@
     <ProjectReference Include="..\TaskTrac.DAL\TaskTrac.DAL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTO\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

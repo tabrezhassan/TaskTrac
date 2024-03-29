@@ -1,21 +1,58 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
 using TaskTrac.DAL.Data;
 using TaskTrac.DAL.Interfaces;
+using TaskTrac.DAL.Models;
 using TaskTrac.DAL.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using TaskTrac.BLL.Services;
+using TaskTrac.BLL.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
-builder.Services.AddScoped<IUserRepository, UsersRepository>();
-builder.Services.AddScoped<ITaskRepository, TaskRepository>();
-builder.Services.AddScoped<ISubTaskRepository, SubTaskRepository>();
-
 // Add services to the container.
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
+builder.Services.AddTransient<IUserRepository, UsersRepository>();
+builder.Services.AddTransient<ITaskRepository, TaskRepository>();
+builder.Services.AddTransient<ISubTaskRepository, SubTaskRepository>();
+
+builder.Services.AddScoped<ITaskService,TaskService>();
+builder.Services.AddScoped<ISubTaskService,SubTaskService>();
+builder.Services.AddScoped<IUserService,UserService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//Adds Identity
+builder.Services.AddIdentity<Users, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+
+////Add Authentication
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer(options =>
+//{
+//    options.SaveToken = true;
+//    options.RequireHttpsMetadata = false;
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = true,
+//        ValidateAudience = true,
+//        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+//        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+//    };
+//});
+
 
 var app = builder.Build();
 
@@ -26,8 +63,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            );
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
