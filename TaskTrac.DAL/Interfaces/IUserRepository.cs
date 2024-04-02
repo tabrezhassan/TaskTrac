@@ -11,6 +11,6 @@ namespace TaskTrac.DAL.Interfaces
     {
         Task<Users> GetUserById(int id);
         Task<Users> GetByUserName(string username);
-        Task CreateUser(Users users);
+        Task<Users> CreateUser(Users users);
     }
 }

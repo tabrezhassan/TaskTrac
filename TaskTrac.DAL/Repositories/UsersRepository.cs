@@ -19,12 +19,30 @@ namespace TaskTrac.DAL.Repositories
             _appDbContext = appDbContext;
         }
 
-        public async Task CreateUser(Users users)
-        {
-            _appDbContext.Users.Add(users);
+        //public async Task<Users> CreateUser(Users users)
+        //{
+        //    try
+        //    {
+        //        if (users != null)
+        //        {
+        //            var newuser = _appDbContext.Add<Users>(users);
+        //            await _appDbContext.SaveChangesAsync();
+        //            return newuser.Entity;
+        //        }
+        //        else
+        //        {
+        //            return new Users();
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
 
-            await _appDbContext.SaveChangesAsync();
-        }
+        //    //_appDbContext.Users.Add(users);
+
+        //    //await _appDbContext.SaveChangesAsync();
+        //}
 
         public async Task<Users> GetByUserName(string username)
         {
@@ -34,6 +52,27 @@ namespace TaskTrac.DAL.Repositories
         public async Task<Users> GetUserById(int id)
         {
             return await _appDbContext.Users.FindAsync(id);
+        }
+
+        public async Task<Users> CreateUser(Users users)
+        {
+            try
+            {
+                if (users != null)
+                {
+                    var newuser = _appDbContext.Add<Users>(users);
+                    await _appDbContext.SaveChangesAsync();
+                    return newuser.Entity;
+                }
+                else
+                {
+                    return new Users();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

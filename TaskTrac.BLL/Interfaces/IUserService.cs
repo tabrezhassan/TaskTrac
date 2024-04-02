@@ -12,7 +12,7 @@ namespace TaskTrac.BLL.Interfaces
     {
         Task<Users> GetUserById(int id);
         Task<Users> GetByUserName(string username);
-        Task<IdentityResult> CreateUser(Users user);
+        Task<Users> CreateUser(Users users);
 
     }
 }

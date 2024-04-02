@@ -1,9 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using TaskTrac.BLL.DTO;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 using TaskTrac.BLL.Interfaces;
+using TaskTrac.BLL.DTO;
 using TaskTrac.DAL.Models;
+using System.Text;
+using System.Runtime.CompilerServices;
+using TaskTrac.API.Interfaces;
 
 namespace TaskTrac.API.Controllers
 {
@@ -11,45 +17,69 @@ namespace TaskTrac.API.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IUserService _userService;
         private readonly UserManager<Users> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
+        private readonly IJwtService _jwtService;
 
-        public AuthenticationController(IUserService userService, UserManager<Users> userManager)
+        public AuthenticationController(UserManager<Users> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IJwtService jwtService)
         {
-            _userService = userService;
             _userManager = userManager;
+            _roleManager = roleManager;
+            _configuration = configuration;
+            _jwtService = jwtService;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser(RegisterUserDTO registerUserDTO)
         {
-            var newUser = new Users
+            var userExists = await _userManager.FindByEmailAsync(registerUserDTO.Email);
+            if (userExists != null)
             {
-                UserName = registerUserDTO.UserName,
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            Users user = new Users()
+            {
+                UserName = registerUserDTO.Email,
                 Email = registerUserDTO.Email,
+                Password = registerUserDTO.Password,
             };
 
-            var result = await _userService.CreateUser(newUser);
+            var result = await _userManager.CreateAsync(user, registerUserDTO.Password);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
-                return BadRequest(result.Errors);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             return Ok();
+
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginUserDTO loginUserDTO)
+        public async Task<IActionResult> Login([FromBody] LoginUserDTO loginUserDTO)
         {
-            var user = _userManager.FindByNameAsync(loginUserDTO.UserName);
+            var user = await _userManager.FindByNameAsync(loginUserDTO.Email);
 
-            if(user == null)
+            if (user != null && await _userManager.CheckPasswordAsync(user, loginUserDTO.Password))
             {
-                return BadRequest("Invalid username or password");
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var token = await _jwtService.GenerateJwtToken(user.Email, userRoles);
+
+                return Ok(new
+                {
+                    token,
+                    expiration = DateTime.Now.AddHours(5)
+                });
             }
 
-            var isValidPassword = await _userManager.CheckPasswordAsync(user, loginUserDTO.passwordHash);
+            return Unauthorized();
+
         }
+
+
     }
 }
+

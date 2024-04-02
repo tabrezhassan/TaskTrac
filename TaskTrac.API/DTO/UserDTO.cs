@@ -9,39 +9,26 @@ namespace TaskTrac.BLL.DTO
 {
     public class UserDTO
     {
-        public int Id { get; set; }
-        public string  UserName { get; set; }
+
         public string Email { get; set; }
-        public string passwordHash { get; set; }
+        public string Password { get; set; }
     }
 
     public class RegisterUserDTO
     {
-        [Required]
-        public string UserName { get; set; }
-
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Email address is required")]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(20, ErrorMessage = "The {0} must be at least {2} and a max of {1} characters long", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        public string passwordHash { get; set; }
+        [Required(ErrorMessage = "Password is required")]
+        public string Password { get; set; }
     }
 
     public class LoginUserDTO
     {
-        [Required]
-        public string UserName { get; set; }
-
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Email address is required")]
         public string Email { get; set; }
 
-        [Required]
-        [StringLength(20, ErrorMessage = "The {0} must be at least {2} and a max of {1} characters long", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        public string passwordHash { get; set; }
+        [Required(ErrorMessage = "Password is required")]
+        public string Password { get; set; }
     }
 }

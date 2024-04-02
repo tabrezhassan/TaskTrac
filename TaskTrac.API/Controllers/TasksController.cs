@@ -18,7 +18,7 @@ namespace TaskTrac.API.Controllers
         private readonly ISubTaskService _subTaskService;
         private readonly UserManager<Users> _userManager;
 
-        public TasksController(ITaskService taskService, ISubTaskService subTaskService, UserManager<Users> userManager)
+        public TasksController(ITaskService taskService, ISubTaskService subTaskService,UserManager<Users> userManager)
         {
             _taskService = taskService;
             _subTaskService = subTaskService;
@@ -28,10 +28,16 @@ namespace TaskTrac.API.Controllers
         //TASKS ACTIONS
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTasksForUser()
+        public async Task<IActionResult> GetAllTasksForUser(int id)
         {
-            int userid = Convert.ToInt32(_userManager.GetUserId(User));
-            var tasks = await _taskService.GetAllForUser(userid);
+            //int userid = Convert.ToInt32(_userManager.GetUserId(User));
+            var tasks = await _taskService.GetAllForUser(id);
+
+            if (tasks == null || tasks.Count == 0)
+            {
+                // If no tasks found for the user, return 404 with a custom message
+                return NotFound($"No tasks found for user with ID {id}");
+            }
 
             return Ok(tasks);
         }
@@ -43,7 +49,7 @@ namespace TaskTrac.API.Controllers
 
             if (task == null)
             {
-                return NotFound("No Task Found");
+                return NotFound($"No tasks found for user with ID {id}");
             }
 
             return Ok(task);
@@ -52,7 +58,7 @@ namespace TaskTrac.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTask(CreateTaskDTO createTaskDTO)
         {
-            int userid = Convert.ToInt32(_userManager.GetUserId(User));
+            int userid = 0; //Convert.ToInt32(_userManager.GetUserId(User));
 
             var task = new Tasks
             {
@@ -103,15 +109,20 @@ namespace TaskTrac.API.Controllers
 
         //SUBTASKS ACTIONS
 
-        [HttpGet("{taskid}/subtasks")]
+        [HttpGet("subtasks")]
         public async Task<IActionResult>GetSubTasksForTask(int taskId)
         {
             var subtasks = await _taskService.GetSubTasksForTask(taskId);
 
+            if (subtasks == null)
+            {
+                return NotFound($"No sub tasks found for Task with ID {taskId}");
+            }
+
             return Ok(subtasks);
         }
 
-        [HttpPost("{taskid/subtasks")]
+        [HttpPost("subtasks")]
         public async Task<IActionResult> CreateSubTask(int taskId, CreateSubTaskDTO createSubTaskDTO)
         {
             var subTask = new SubTasks
@@ -119,11 +130,13 @@ namespace TaskTrac.API.Controllers
                 Title = createSubTaskDTO.Title,
                 Description = createSubTaskDTO.Description,
                 DueDate = createSubTaskDTO.DueDate,
+                TaskId = taskId
             };
 
             await _taskService.CreateSubTask(subTask);
 
-            return CreatedAtAction(nameof(GetSubTasksForTask), new {taskId},subTask);
+            //return Ok(subTask);
+            return CreatedAtAction(nameof(GetSubTasksForTask), new {taskId = 1},subTask);
         }
     }
 }

@@ -12,28 +12,11 @@ namespace TaskTrac.BLL.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<Users> _usersManager;
-        private readonly IUserRepository _userRepository;
+       private readonly IUserRepository _userRepository;
 
-        public UserService(UserManager<Users> userManager,IUserRepository userRepository)
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _usersManager = userManager;
-        }
-
-        public async Task<IdentityResult> CreateUser(Users user)
-        {
-            var newUser = new Users
-            {
-                UserName = user.UserName,
-                Email = user.Email,
-                PasswordHash = user.PasswordHash,
-            };
-
-            var result = await _usersManager.CreateAsync(newUser);
-            return result;
-
-            //return await _userRepository.CreateUser(user);
         }
 
         public async Task<Users> GetByUserName(string username)
@@ -44,6 +27,25 @@ namespace TaskTrac.BLL.Services
         public async Task<Users> GetUserById(int id)
         {
            return await _userRepository.GetUserById(id);
+        }
+
+        public async Task<Users> CreateUser(Users users)
+        {
+            try
+            {
+                if(users != null)
+                {
+                    return await _userRepository.CreateUser(users);
+                }
+                else
+                {
+                    throw new ArgumentNullException(nameof(users));
+                }
+            }
+            catch(Exception)
+            {
+                throw;
+            }
         }
     }
 }
