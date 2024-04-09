@@ -1,4 +1,4 @@
-namespace TaskTrac.PL.Models
+namespace TaskTrak.PL.Models
 {
     public class ErrorViewModel
     {

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using TaskTrac.PL.Models;
+using TaskTrak.PL.Models;
 
-namespace TaskTrac.PL.Controllers
+namespace TaskTrak.PL.Controllers
 {
     public class HomeController : Controller
     {

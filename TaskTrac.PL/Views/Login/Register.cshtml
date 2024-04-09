@@ -1,0 +1,103 @@
+﻿@model TaskTrac.DAL.Models.Login
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <form id="registerForm">
+        <div class="row justify-content-center">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <input type="email" name="username" id="username" class="form-control" placeholder="Email" required>
+                    </div>
+                    
+                    <div class="row justify-content-center">
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <div class="row justify-content-center">
+                        <input type="submit" class="btn btn-secondary" value="Register" id="register-form-submit">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+
+</html>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        email: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        confirmPassword: document.getElementById("confirmPassword").value,
+
+        //Checks if passwords match
+        if(password !== confirmPassword)
+        {
+            //Creates and Displays Bootstrap toast notification
+            var toastElement = document.getElementById('div');
+            toastElement.classList.add('toast');
+            toastElement.classList.add('gb-danger');
+            toastElement.setAttribute('role','alert');
+            toastElement.setAttribute('aria-live','assertive');
+            toastElement.setAttribute('aria-atomic', 'true');
+            toastElement.innerHTML = `
+                <div class = "toast-header">
+                    <strong class="mr-auto">ERROR</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"> 
+                        <span aria-hidden>&times;</span>
+                    </button>
+                </div>
+                 <div class = "toast-body">
+                    Passwords do not match
+                </div>
+            `;
+            document.body.appendChild(toastElement);
+            $(toastElement).toast('show');
+
+            return;
+        }
+       
+        formData = {
+            Email = email,
+            Password = password,
+            ConfirmPassword = confirmPassword
+        };
+
+        fetch('https://localhost:8000/api/Authentication/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Registration Failed');
+                }
+                //Redirects to Login after successful registration
+                window.location.href = '/Login';
+            })
+            .catch(error => {
+                console.error('Registration Error', error)
+            })
+    })
+</script>

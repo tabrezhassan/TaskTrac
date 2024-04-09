@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TaskTrac.BLL.DTO;
+using TaskTrac.API.DTO;
 using TaskTrac.BLL.Interfaces;
 
 namespace TaskTrac.API.Controllers
 {
     [Route("api/[controller]")]
+    //[Authorize]
     [ApiController]
     public class SubTasksController : ControllerBase
     {

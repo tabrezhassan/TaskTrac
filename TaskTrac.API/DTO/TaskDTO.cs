@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskTrac.DAL.Models;
 
-namespace TaskTrac.BLL.DTO
+namespace TaskTrac.API.DTO
 {
     public class TaskDTO
     {
@@ -26,7 +26,7 @@ namespace TaskTrac.BLL.DTO
 
     public class CreateTaskDTO
     {
-       
+
         [Required(ErrorMessage = "Title for Task is required")]
         [StringLength(100)]
         public string? Title { get; set; }

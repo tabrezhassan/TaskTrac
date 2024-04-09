@@ -1,0 +1,50 @@
+﻿@model TaskTrac.DAL.Models.Tasks
+
+@{
+    ViewData["Title"] = "Tasks";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h3>List of Tasks</h3>
+
+        <a class="btn btn-outline-secondary" href="CreateTask">NEW TASK</a>
+
+        <div class="row">
+            <div class="col">
+                <table class="table table-bg" id="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col" hidden>ID</th>
+                            <th scope="col">TITLE</th>
+                            <th scope="col">DESCRIPTION</th>
+                            <th scope="col">DUE DATE</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskList">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>
+
+<script type="module" src="~/js/tasks.js"></script>
+<script type="module" src="~/js/deleteConfirmation.js"></script>
+
+<style>
+    .table {
+        margin-top: 50px;
+    }
+</style>

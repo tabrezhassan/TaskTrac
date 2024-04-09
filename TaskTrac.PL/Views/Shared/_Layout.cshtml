@@ -3,52 +3,36 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home - TaskTrac</title>
+    <title>@ViewData["Title"] - TaskTrak</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/TaskTrac.PL.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/bootstrap.css">
+    
+    @*<link rel="stylesheet" href="~/TaskTrak.PL.styles.css" asp-append-version="true" />*@
 </head>
 <body>
     <header>
-        <!-- Navbar.cshtml -->
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <img class="navimg" href="#" src="~/Assets/LogoNew.png" />
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <ul class="nav nav-underline">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home</a>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <!-- Container wrapper -->
+            <div class="container-fluid">
+                <!-- Collapsible wrapper -->
+                <img class="navimg" href="#" src="/Assets/HeaderLogo.png" />
+                <div class="collapse navbar-collapse justify-content-center"
+                     id="navbarCenteredExample">
+                    <!-- Left links -->
+                    <ul class="navbar-nav mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" aria-current="page" href="#">HOME</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Tasks</a>
-                        </li>
-                        <!-- Add more menu items as needed -->
-                    </ul>
-                    <form class="form-inline my-2 my-lg-0">
-                        <img src="path_to_avatar_image" alt="Avatar" class="avatar mr-2">
-                        <a class="btn btn-outline-success my-2 my-sm-0" href="#">Logout</a>
-                    </form>
-                }
-                else
-                {
-                    <ul class="nav nav-underline">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Sign In</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Tasks" asp-action="Tasks">TASKS</a>
                         </li>
                     </ul>
-                }
+                    <!-- Left links -->
+                </div>
+                <!-- Collapsible wrapper -->
             </div>
+            <!-- Container wrapper -->
         </nav>
-
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -58,22 +42,12 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - TaskTrac - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - TaskTrak - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/bootsrap.js"></script>
-
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/bootstrap.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-<style>
-    .navimg {
-        width: 150px;
-        height: 45px;
-    }
-</style>

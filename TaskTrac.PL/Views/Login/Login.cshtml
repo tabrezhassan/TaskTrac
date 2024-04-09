@@ -1,0 +1,82 @@
+﻿@model TaskTrac.DAL.Models.Login
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <form id="loginForm">
+        <div class="row justify-content-center">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Login</h2>
+                    <div class="row justify-content-right">
+                        <a class="btn btn-primary" href="/Login/Register">Register User</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <input type="email" name="username" id="username" class="form-control" placeholder="Email" required>
+                    </div>
+                    </br>
+                    <div class="row justify-content-center">
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                    </div>
+
+
+
+                </div>
+                <div class="card-footer">
+                    <div class="row justify-content-center">
+                        <input type="submit" class="btn btn-secondary" value="Login" id="login-form-submit">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+
+</html>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit",function (event){
+        event.preventDefault();
+
+        var formData = {
+            Email: document.getElementById("username").value,
+            Password: document.getElementById("password").value,
+        };
+
+        fetch('https://localhost:8000/api/Authentication/login',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify(formData)
+        })
+        .then(response => {
+            if(response.status !== 200) {
+                    window.location.href = "/Login/Login";
+            }
+            return response.json();
+        })
+        .then(data => {
+            //Saves token to local storage
+            localStorage.setItem("token",data.token);
+            localStorage.setItem("expiration",data.expiration)
+
+            //Redirects to Home Page
+            window.location.href = "/Home";
+        })
+        .catch(error => {
+            console.error('Login Error',error)
+        })
+    })
+</script>

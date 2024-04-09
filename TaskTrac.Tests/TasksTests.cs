@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 using TaskTrac.API.Controllers;
 using Microsoft.AspNetCore.Identity;
 using static NUnit.Framework.Constraints.Tolerance;
-using TaskTrac.BLL.DTO;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
+using TaskTrac.API.DTO;
 
 namespace TaskTrac.Tests
 {

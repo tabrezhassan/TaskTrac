@@ -1,23 +1,39 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskTrac.BLL.DTO;
-using TaskTrac.BLL.Interfaces;
 using TaskTrac.DAL.Models;
 
-namespace TaskTrac.PL.Controllers
+namespace TaskTrak.PL.Controllers
 {
     public class TasksController : Controller
     {
-        private readonly ITaskService _taskService;
-
-        public TasksController(ITaskService taskService)
+        public IActionResult Tasks()
         {
-            _taskService = taskService;
+            return View();
         }
 
-        public IActionResult Index()
+        public IActionResult CreateTask()
         {
-           return View();
+            return View();
+        }
+
+        public IActionResult UpdateTask(int id)
+        {
+            var task = new Tasks
+            {
+                Id = id
+            };
+
+            return View(task);
+        }
+
+        public IActionResult DeleteTask(int id)
+        {
+            var task = new Tasks
+            {
+                Id = id
+            };
+
+            return View(task);
         }
     }
 }

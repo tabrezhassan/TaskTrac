@@ -1,16 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using TaskTrac.BLL.DTO;
+using TaskTrac.API.DTO;
 using TaskTrac.BLL.Interfaces;
 using TaskTrac.DAL.Models;
 
 namespace TaskTrac.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class TasksController : ControllerBase
     {
@@ -35,7 +37,7 @@ namespace TaskTrac.API.Controllers
 
             if (tasks == null || tasks.Count == 0)
             {
-                // If no tasks found for the user, return 404 with a custom message
+                // If no tasks found for the user, returns 404 with a custom message
                 return NotFound($"No tasks found for user with ID {id}");
             }
 

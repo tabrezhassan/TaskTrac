@@ -5,11 +5,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using TaskTrac.BLL.Interfaces;
-using TaskTrac.BLL.DTO;
 using TaskTrac.DAL.Models;
 using System.Text;
 using System.Runtime.CompilerServices;
 using TaskTrac.API.Interfaces;
+using TaskTrac.API.DTO;
 
 namespace TaskTrac.API.Controllers
 {
@@ -58,6 +58,7 @@ namespace TaskTrac.API.Controllers
         }
 
         [HttpPost("login")]
+        //[Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginUserDTO loginUserDTO)
         {
             var user = await _userManager.FindByNameAsync(loginUserDTO.Email);

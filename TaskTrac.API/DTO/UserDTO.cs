@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskTrac.BLL.DTO
+namespace TaskTrac.API.DTO
 {
     public class UserDTO
     {

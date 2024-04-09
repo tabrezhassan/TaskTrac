@@ -1,0 +1,134 @@
+﻿@model TaskTrac.DAL.Models.Tasks
+
+@{
+    ViewData["Title"] = "Create Task";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Task</title>
+</head>
+<body>
+    <form id="updateTaskForm">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <a href="/Tasks/Tasks" class="btnBackToList float-right"><i class="fas fa-times" style="color:#E63946"></i></a>
+                            <h2>NEW TASK</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" name="title" id="title" class="form-control" placeholder="Task Title" required>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" name="description" id="description" class="form-control" placeholder="Task Description" required>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="date" name="dueDate" id="dueDate" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row justify-content-center">
+                                <input type="submit" class="btn btn-secondary" id="createTask-form-submit">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <br>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Button to trigger modal -->
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#subTaskModal">
+                NEW SUB TASK
+            </button>
+            <div class="row">
+                <div class="col">
+                    <table class="table table-bg" id="table">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col" hidden>ID</th>
+                                <th scope="col">TITLE</th>
+                                <th scope="col">DESCRIPTION</th>
+                                <th scope="col">DUE DATE</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subTaskList">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="subTaskModal" tabindex="-1" aria-labelledby="subTaskModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="subTaskModal">New Sub Task</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <input input type="text" name="subTaskTitle" id="subTaskTitle" class="form-control" placeholder="Sub Task Title" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <input type="text" name="subTaskDescription" id="subTaskDescription" class="form-control" placeholder="Sub Task Description">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <input type="date" name="subTaskDueDate" id="subTaskDueDate" class="form-control" required>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                            <div class="col">
+                                <button id="AddSubTask" type="button" class="btn btn-outline-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+</html>
+
+<script type="module" src="~/js/updateTask.js"></script>
+<script type="module" src="~/js/subTasks.js"></script>
+<script type="module" src="~/js/deleteConfirmation.js"></script>
+<script type="module" src="~/js/createSubTask.js"></script>
+@*<script type="module" src="~/js/updateSubTaskNew.js"></script>*@

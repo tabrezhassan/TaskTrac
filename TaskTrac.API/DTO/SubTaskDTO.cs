@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskTrac.BLL.DTO
+namespace TaskTrac.API.DTO
 {
     public class SubTaskDTO
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public  DateTime DueDate { get; set; }
+        public DateTime DueDate { get; set; }
         public int TaskId { get; set; }
     }
 
