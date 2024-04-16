@@ -1,7 +1,9 @@
-﻿namespace TaskTrac.API.Interfaces
+﻿using TaskTrac.DAL.Models;
+
+namespace TaskTrac.API.Interfaces
 {
     public interface IJwtService
     {
-        Task<string> GenerateJwtToken(string email,IList<string> roles);
+        Task<string> GenerateJwtToken(Users users,IList<string> roles);
     }
 }

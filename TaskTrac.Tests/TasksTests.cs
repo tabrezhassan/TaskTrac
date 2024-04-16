@@ -14,6 +14,7 @@ using static NUnit.Framework.Constraints.Tolerance;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using TaskTrac.API.DTO;
+using Microsoft.AspNetCore.Http;
 
 namespace TaskTrac.Tests
 {
@@ -37,7 +38,8 @@ namespace TaskTrac.Tests
                 {
                     Id = 1,
                     Title = "Task 1",
-                    Description = "Description for Task 1"
+                    Description = "Description for Task 1",
+                    UserId = "880918fc-b89b-4ba4-9c52-bcb241d3caa1"
                 },
                 new Tasks
                 {
@@ -109,16 +111,76 @@ namespace TaskTrac.Tests
             //Arrange
             var taskList = MockTasks();
 
-            _taskService.GetAllForUser(3).Returns(taskList);
+            //Valid user id for testing
+            var userId = "10d0ce15-6844-4a25-813d-8618ca146b7d";
+            var userName = "test@test.com";
 
-            //Act
+            // Mock HttpContext to simulate a logged-in user
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, userName),
+                new Claim(ClaimTypes.NameIdentifier, userId)
+                // Add any other claims if needed
+            }, "mock"));
+
+            var httpContext = new DefaultHttpContext
+            {
+                User = user
+            };
+            var controllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            _taskService.GetAllForUser(userId).Returns(taskList);
+
+            // Act
             var controller = CreateController(_taskService, _subTaskService, _userManager);
-            var result = controller.GetAllTasksForUser(3).Result;
+            controller.ControllerContext = controllerContext; // Set the controller's context
 
-            //Assert
-            var okResult = result as OkObjectResult;
-            Assert.IsNotNull(okResult);
-            Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            try
+            {
+                var result = controller.GetAllTasksForUser().Result;
+
+                // Assert
+                var okResult = result as OkObjectResult;
+                Assert.IsNotNull(okResult);
+                Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                throw;
+            }
+
+            ////Mock HttpContext to simulate a logged in user
+            //var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            //{
+            //    new Claim(ClaimTypes.NameIdentifier, userId),
+            //}, "mock"));
+
+            //var httpContext = new DefaultHttpContext
+            //{
+            //    User = user
+            //};
+
+            //var controllerContext = new ControllerContext
+            //{
+            //    HttpContext = httpContext,
+            //};
+
+            //_taskService.GetAllForUser(userId).Returns(taskList);
+
+            ////Act
+            //var controller = CreateController(_taskService, _subTaskService, _userManager);
+            //controller.ControllerContext = controllerContext;
+
+            //var result = controller.GetAllTasksForUser().Result;
+
+            ////Assert
+            //var okResult = result as OkObjectResult;
+            //Assert.IsNotNull(okResult);
+            //Assert.That(okResult.StatusCode, Is.EqualTo(200));
         }
 
         [Test]
@@ -129,7 +191,7 @@ namespace TaskTrac.Tests
 
             //Act
             var controller = CreateController(_taskService, _subTaskService, _userManager);
-            var result = controller.GetAllTasksForUser(7).Result;
+            var result = controller.GetAllTasksForUser().Result;
 
             //Assert
             var notFoundResult = result as NotFoundObjectResult;
@@ -191,7 +253,7 @@ namespace TaskTrac.Tests
                     Title = createTaskDTO.Title,
                     Description = createTaskDTO.Description,
                     DueDate = createTaskDTO.DueDate,
-                    UserId = 0
+                    UserId = "0"
                 };
 
                 _taskService.CreateTask(Arg.Any<Tasks>()).Returns(Task.CompletedTask);
@@ -225,7 +287,7 @@ namespace TaskTrac.Tests
                 Title = createTaskDTO.Title,
                 Description = createTaskDTO.Description,
                 DueDate = createTaskDTO.DueDate,
-                UserId = 0
+                UserId = "0"
             };
 
             _taskService.CreateTask(Arg.Any<Tasks>()).Returns(Task.CompletedTask);

@@ -9,7 +9,7 @@ namespace TaskTrac.BLL.Interfaces
 {
     public interface ITaskService
     {
-        Task<List<Tasks>> GetAllForUser(int id);
+        Task<List<Tasks>> GetAllForUser(string id);
         Task<Tasks> GetTaskById(int id);
         Task CreateTask(Tasks tasks);
         Task UpdateTask(Tasks tasks);

@@ -12,36 +12,40 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
-        <h3>List of Tasks</h3>
 
-        <a class="btn btn-outline-secondary" href="CreateTask">NEW TASK</a>
+    <div class="container-fluid">
+        <h3 class="mt-3 mb-4">List of Tasks</h3>
 
         <div class="row">
-            <div class="col">
-                <table class="table table-bg" id="table">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col" hidden>ID</th>
-                            <th scope="col">TITLE</th>
-                            <th scope="col">DESCRIPTION</th>
-                            <th scope="col">DUE DATE</th>
-                            <th>ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="taskList">
-                    </tbody>
-                </table>
+            <div class="col-md-6">
+                <a class="btn btn-outline-secondary mb-3" href="CreateTask">NEW TASK</a>
             </div>
+            <div class="col-md-6">
+                <input type="text" id="searchField" class="form-control mb-3" placeholder="Search by Title, Description or Due Date">
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col" hidden>ID</th>
+                        <th scope="col">TITLE</th>
+                        <th scope="col">DESCRIPTION</th>
+                        <th scope="col">DUE DATE</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="taskList">
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </body>
-</html>
-
 <script type="module" src="~/js/tasks.js"></script>
 <script type="module" src="~/js/deleteConfirmation.js"></script>
+</html>
 
 <style>
     .table {

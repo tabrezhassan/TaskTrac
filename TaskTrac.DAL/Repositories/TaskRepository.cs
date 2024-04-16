@@ -27,10 +27,10 @@ namespace TaskTrac.DAL.Repositories
             await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task<List<Tasks>> GetAllForUser(int Id)
+        public async Task<List<Tasks>> GetAllForUser(string Id)
         {
             return await _appDbContext.Tasks
-                .Where(t => t.UserId == Id).Include(t => t.SubTasks).ToListAsync();
+               .Where(t => t.UserId == Id).Include(t => t.SubTasks).ToListAsync();
         }
 
         public async Task<Tasks> GetTaskById(int Id)

@@ -30,18 +30,28 @@ namespace TaskTrac.API.Controllers
         //TASKS ACTIONS
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTasksForUser(int id)
+        public async Task<IActionResult> GetAllTasksForUser()
         {
-            //int userid = Convert.ToInt32(_userManager.GetUserId(User));
-            var tasks = await _taskService.GetAllForUser(id);
-
-            if (tasks == null || tasks.Count == 0)
+            try
             {
-                // If no tasks found for the user, returns 404 with a custom message
-                return NotFound($"No tasks found for user with ID {id}");
-            }
+                string userId = _userManager.GetUserId(User);
+                var tasks = await _taskService.GetAllForUser(userId);
 
-            return Ok(tasks);
+                return Ok(tasks);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for further analysis
+                // You can use your preferred logging framework here
+                Console.WriteLine($"Exception occurred in GetAllTasksForUser: {ex}");
+
+                // Return an error response
+                return StatusCode(500, "An error occurred while processing the request.");
+            }
+            //string userId = _userManager.GetUserId(User);
+            //var tasks = await _taskService.GetAllForUser(userId);
+
+            //return Ok(tasks);
         }
 
         [HttpGet("{id}")]
@@ -60,14 +70,14 @@ namespace TaskTrac.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTask(CreateTaskDTO createTaskDTO)
         {
-            int userid = 0; //Convert.ToInt32(_userManager.GetUserId(User));
+            string userId = _userManager.GetUserId(User);
 
             var task = new Tasks
             {
                 Title = createTaskDTO.Title,
                 Description = createTaskDTO.Description,
                 DueDate = createTaskDTO.DueDate,
-                UserId = userid,
+                UserId = userId,
             };
 
             await _taskService.CreateTask(task);
@@ -138,7 +148,7 @@ namespace TaskTrac.API.Controllers
             await _taskService.CreateSubTask(subTask);
 
             //return Ok(subTask);
-            return CreatedAtAction(nameof(GetSubTasksForTask), new {taskId = 1},subTask);
+            return CreatedAtAction(nameof(GetSubTasksForTask), new {taskId = taskId},subTask);
         }
     }
 }

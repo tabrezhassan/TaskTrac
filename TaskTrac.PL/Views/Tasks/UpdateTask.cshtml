@@ -42,7 +42,7 @@
                         </div>
                         <div class="card-footer">
                             <div class="row justify-content-center">
-                                <input type="submit" class="btn btn-secondary" id="createTask-form-submit">
+                                <input type="submit" class="btn btn-outline-secondary" id="createTask-form-submit">
                             </div>
                         </div>
                     </div>
@@ -96,13 +96,18 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col">
-                                <input type="text" name="subTaskDescription" id="subTaskDescription" class="form-control" placeholder="Sub Task Description">
+                                <textarea name="subTaskDescription" id="subTaskDescription" class="form-control" placeholder="Sub Task Description"></textarea>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
                                 <input type="date" name="subTaskDueDate" id="subTaskDueDate" class="form-control" required>
-                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <!-- Hidden input field for subtask ID -->
+                                <input type="hidden" id="subTaskId" value="0">
                             </div>
                         </div>
                     </div>
@@ -114,7 +119,7 @@
                                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
                             </div>
                             <div class="col">
-                                <button id="AddSubTask" type="button" class="btn btn-outline-primary">Save</button>
+                                <button id="AddSubTask" type="button" class="btn btn-outline-primary" data-action="add" data-subtaskId="">Save</button>
                             </div>
                         </div>
                     </div>
@@ -123,12 +128,8 @@
         </div>
     </div>
 </body>
-
-
+<script type="module" src="~/js/updateTask.js"></script>
+<script type="module" src="~/js/deleteConfirmation.js"></script>
 </html>
 
-<script type="module" src="~/js/updateTask.js"></script>
-<script type="module" src="~/js/subTasks.js"></script>
-<script type="module" src="~/js/deleteConfirmation.js"></script>
-<script type="module" src="~/js/createSubTask.js"></script>
-@*<script type="module" src="~/js/updateSubTaskNew.js"></script>*@
+

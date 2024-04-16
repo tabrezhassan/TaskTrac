@@ -21,19 +21,18 @@ using TaskTrac.API.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
+
 builder.Services.AddTransient<IUserRepository, UsersRepository>();
 builder.Services.AddTransient<ITaskRepository, TaskRepository>();
 builder.Services.AddTransient<ISubTaskRepository, SubTaskRepository>();
 
-builder.Services.AddScoped<ITaskService,TaskService>();
-builder.Services.AddScoped<ISubTaskService,SubTaskService>();
-builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ISubTaskService, SubTaskService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
-builder.Services.AddScoped<IJwtService,JwtService>();
-
-
-
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -44,11 +43,11 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Adds Identity
+builder.Services.AddIdentity<Users, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>();
 
-//Adds Identity
-builder.Services.AddIdentity<Users, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
-
-//Add Authentication
+// Add Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -78,13 +77,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(x => x
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            );
-
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -92,3 +92,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

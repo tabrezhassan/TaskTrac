@@ -10,6 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <form id="registerForm">
@@ -28,6 +29,15 @@
                         <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
                     </div>
 
+                    <!-- Password criteria list -->
+                    <div id="passwordCriteriaList">
+                        <ul>
+                            <li id="nonAlphanumeric">At least one non-alphanumeric character</li>
+                            <li id="lowercase">At least one lowercase letter</li>
+                            <li id="uppercase">At least one uppercase letter</li>
+                        </ul>
+                    </div>
+
                 </div>
                 <div class="card-footer">
                     <div class="row justify-content-center">
@@ -37,67 +47,97 @@
             </div>
         </div>
     </form>
+
+    <script>
+
+        document.getElementById("registerForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+
+            //Checks if passwords match
+            if (document.getElementById("password").value !== document.getElementById("confirmPassword").value) {
+                alert("Passwords don not match")
+            }
+
+            // Perform password validation against criteria
+            var password = document.getElementById("password").value;
+            if (!validatePassword(password)) {
+                alert("Password must have at least one non-alphanumeric character, one lowercase letter, and one uppercase letter.");
+                return;
+            }
+
+            var formData = {
+                Email: document.getElementById("username").value,
+                Password: document.getElementById("password").value,
+            };
+
+            fetch('https://localhost:8000/api/Authentication/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Registration Failed');
+                    }
+                    //Redirects to Login after successful registration
+                    window.location.href = '/Login/Login';
+                })
+                .catch(error => {
+                    console.error('Registration Error', error)
+                })
+        })
+
+        // Function to validate password against criteria
+        function validatePassword(password) {
+            // Password must have at least one non-alphanumeric character, one lowercase letter, and one uppercase letter
+            var alphanumericRegex = /^[0-9a-zA-Z]+$/;
+            var lowercaseRegex = /[a-z]/;
+            var uppercaseRegex = /[A-Z]/;
+
+            var hasNonAlphanumeric = !alphanumericRegex.test(password);
+            var hasLowercase = lowercaseRegex.test(password);
+            var hasUppercase = uppercaseRegex.test(password);
+
+            // Update password criteria list
+
+            document.getElementById("nonAlphanumeric").innerHTML = (hasNonAlphanumeric ? '<i class="fas fa-check" style="color: green;"></i>' : '<i class="fas fa-times" style="color: red;"></i>') + " At least one non-alphanumeric character";
+            document.getElementById("lowercase").innerHTML = (hasLowercase ? '<i class="fas fa-check" style="color: green;"></i>' : '<i class="fas fa-times" style="color: red;"></i>') + " At least one lowercase letter";
+            document.getElementById("uppercase").innerHTML = (hasUppercase ? '<i class="fas fa-check" style="color: green;"></i>' : '<i class="fas fa-times" style="color: red;"></i>') + " At least one uppercase letter";
+
+            return hasNonAlphanumeric && hasLowercase && hasUppercase;
+
+            //document.getElementById("nonAlphanumeric").classList.toggle("completed", hasNonAlphanumeric);
+            //document.getElementById("nonAlphanumeric").classList.toggle("not-completed", !hasNonAlphanumeric);
+            //document.getElementById("lowercase").classList.toggle("completed", hasLowercase);
+            //document.getElementById("lowercase").classList.toggle("not-completed", !hasLowercase);
+            //document.getElementById("uppercase").classList.toggle("completed", hasUppercase);
+            //document.getElementById("uppercase").classList.toggle("not-completed", !hasUppercase);
+
+            //return hasNonAlphanumeric && hasLowercase && hasUppercase;
+        }
+
+        // Event listener to check password criteria on input change
+        document.getElementById("password").addEventListener("input", function () {
+            validatePassword(this.value);
+        });
+    </script>
+
+    <style>
+        /* Style for completed criteria */
+        .completed {
+            text-decoration: line-through;
+            color: forestgreen;
+        }
+
+        /* Style for criteria not completed */
+        .not-completed {
+            color: red;
+        }
+    </style>
 </body>
 
 </html>
 
-<script>
-    document.getElementById("registerForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        email: document.getElementById("username").value,
-        password: document.getElementById("password").value,
-        confirmPassword: document.getElementById("confirmPassword").value,
-
-        //Checks if passwords match
-        if(password !== confirmPassword)
-        {
-            //Creates and Displays Bootstrap toast notification
-            var toastElement = document.getElementById('div');
-            toastElement.classList.add('toast');
-            toastElement.classList.add('gb-danger');
-            toastElement.setAttribute('role','alert');
-            toastElement.setAttribute('aria-live','assertive');
-            toastElement.setAttribute('aria-atomic', 'true');
-            toastElement.innerHTML = `
-                <div class = "toast-header">
-                    <strong class="mr-auto">ERROR</strong>
-                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close"> 
-                        <span aria-hidden>&times;</span>
-                    </button>
-                </div>
-                 <div class = "toast-body">
-                    Passwords do not match
-                </div>
-            `;
-            document.body.appendChild(toastElement);
-            $(toastElement).toast('show');
-
-            return;
-        }
-       
-        formData = {
-            Email = email,
-            Password = password,
-            ConfirmPassword = confirmPassword
-        };
-
-        fetch('https://localhost:8000/api/Authentication/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Registration Failed');
-                }
-                //Redirects to Login after successful registration
-                window.location.href = '/Login';
-            })
-            .catch(error => {
-                console.error('Registration Error', error)
-            })
-    })
-</script>

@@ -13,6 +13,5 @@ namespace TaskTrak.PLL.Controllers
         {
             return View();
         }
-
     }
 }

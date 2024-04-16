@@ -7,7 +7,7 @@ using TaskTrac.BLL.Interfaces;
 namespace TaskTrac.API.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class SubTasksController : ControllerBase
     {

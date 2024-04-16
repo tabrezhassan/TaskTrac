@@ -21,7 +21,7 @@ namespace TaskTrac.DAL.Models
         [Required(ErrorMessage = "Due Date for Task is required")]
         public DateTime DueDate { get; set; }
 
-        public int UserId { get;set; }
+        public string UserId { get;set; }
         public Users Users { get; set; }
         
         public List<SubTasks>? SubTasks { get; set; }

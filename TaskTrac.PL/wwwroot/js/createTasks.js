@@ -1,4 +1,6 @@
 ﻿
+import { displayToast } from './deleteConfirmation.js';
+
 document.getElementById("createTaskForm").addEventListener("submit", createTask);
 
 function getToken() {
@@ -49,10 +51,11 @@ function createTask(event) {
     })
         .then(response => response.json)
         .then(data => {
-            window.location.href = "/Tasks/Tasks";
+            displayToast('Create Task','Task created successfully!', 'success');
+            
         })
         .catch(error => console.error("Error create task:", error));
-        //.catch (error => console.error("Error obtaining token:", error));
+    displayToast('Create Task', 'Failed to create task. Please try again.', 'error');
 }
 
 

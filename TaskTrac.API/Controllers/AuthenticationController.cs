@@ -10,6 +10,7 @@ using System.Text;
 using System.Runtime.CompilerServices;
 using TaskTrac.API.Interfaces;
 using TaskTrac.API.DTO;
+using System.Data;
 
 namespace TaskTrac.API.Controllers
 {
@@ -67,8 +68,8 @@ namespace TaskTrac.API.Controllers
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
 
-                var token = await _jwtService.GenerateJwtToken(user.Email, userRoles);
-
+                var token = await _jwtService.GenerateJwtToken(user, userRoles);
+                
                 return Ok(new
                 {
                     token,

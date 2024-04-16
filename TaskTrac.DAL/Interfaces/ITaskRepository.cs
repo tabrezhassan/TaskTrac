@@ -9,7 +9,7 @@ namespace TaskTrac.DAL.Interfaces
 {
     public interface ITaskRepository
     {
-        Task<List<Tasks>> GetAllForUser(int Id);
+        Task<List<Tasks>> GetAllForUser(string Id);
         Task<Tasks> GetTaskById(int Id);
         Task CreateTask(Tasks tasks);
         Task UpdateTask(Tasks tasks);

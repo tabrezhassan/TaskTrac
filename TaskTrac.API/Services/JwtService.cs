@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Xml;
 using TaskTrac.API.Interfaces;
+using TaskTrac.DAL.Models;
 
 namespace TaskTrac.API.Services
 {
@@ -19,13 +20,14 @@ namespace TaskTrac.API.Services
         }
 
         //Method that generates JWT token asynchronously
-        public async Task<string> GenerateJwtToken(string email, IList<string> roles)
+        public async Task<string> GenerateJwtToken(Users users, IList<string> roles)
         {
             //Create a list to store claims for the token
             var authClaim = new List<Claim>
             {
                 //Adds email claim to indentify the user
-                new Claim(ClaimTypes.Name, email),
+                new Claim(ClaimTypes.Name, users.UserName),
+                new Claim(ClaimTypes.NameIdentifier,users.Id),
 
                 //Addunique identifier claim for JWT
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),

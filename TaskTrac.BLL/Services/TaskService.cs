@@ -46,9 +46,9 @@ namespace TaskTrac.BLL.Services
             await _taskRepository.DeleteTask(id);
         }
 
-        public async Task<List<Tasks>> GetAllForUser(int id)
+        public async Task<List<Tasks>> GetAllForUser(string id)
         {
-           return await _taskRepository.GetAllForUser(id);
+            return await _taskRepository.GetAllForUser(id);
         }
 
         public async Task<List<SubTasks>> GetSubTasksForTask(int id)

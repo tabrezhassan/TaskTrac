@@ -4,6 +4,23 @@ import { showDeleteConfirmation } from './deleteConfirmation.js';
 
 document.addEventListener("DOMContentLoaded", function () {
     fetchTasks();
+
+    document.getElementById('searchField').addEventListener('input', function () {
+        var filter = this.value.toLowerCase(); // Convert search query to lowercase
+        var rows = document.getElementById("table").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+        for (var i = 0; i < rows.length; i++) {
+            var title = rows[i].cells[1].textContent.toLowerCase(); // Convert cell content to lowercase
+            var description = rows[i].cells[2].textContent.toLowerCase();
+            var dueDate = rows[i].cells[3].textContent.toLowerCase();
+
+            if (title.indexOf(filter) > -1 || description.indexOf(filter) > -1 || dueDate.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    });
 });
 
 function getToken() {
@@ -41,7 +58,7 @@ function handleDeleteConfirmation(taskId) {
 
 function fetchTasks() {
 
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -75,8 +92,8 @@ function fetchTasks() {
                     <td>${task.description}</td>
                     <td>${formattedDueDate}</td>
                     <td>
-                        <a class="btn btn-outline-secondary btn-sm" href="UpdateTask?id=${task.id}"><i class="fas fa-edit"></i>Edit</a>
-                        <a class="btn btn-outline-danger btn-sm delete-task" data-task-id="${task.id}"><i class="fas fa-trash-alt"></i>Delete</a>
+                        <a class="btn btn-outline-secondary btn-sm" href="UpdateTask?id=${task.id}"> Edit</a>
+                        <a class="btn btn-outline-danger btn-sm delete-task" data-task-id="${task.id}"> Delete</a>
                     </td
                 `;
                     taskList.appendChild(row);
@@ -99,6 +116,27 @@ function fetchTasks() {
         .catch(error => {
             console.error('Error fetching Tasks', error);
 
-    });
+        });
+
+    //window.onload = function () {
+    //    fetchTasks();
+
+    //    document.getElementById('searchField').addEventListener('input', function () {
+    //        var filter = this.value.toUpperCase();
+    //        var rows = document.getElementById("table").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+    //        for (var i = 0; i < rows.length; i++) {
+    //            var title = rows[i].cells[1].textContent.toUpperCase();
+    //            var description = rows[i].cells[2].textContent.toUpperCase();
+    //            var dueDate = rows[i].cells[3].textContent.toUpperCase();
+
+    //            if (title.indexOf(filter) > -1 || description.indexOf(filter) > -1 || dueDate.indexOf(filter) > -1) {
+    //                rows[i].style.display = "";
+    //            } else {
+    //                rows[i].style.display = "none";
+    //            }
+    //        }
+    //    });
+    //}
 }
 
