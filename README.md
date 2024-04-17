@@ -18,12 +18,19 @@ TaskTrac follows the N-tier architecture, which is
 ### Setup:
 
 To set up TaskTrac:
-1.	If **(LocalDb)\MSSQLLocalDB** is installed, run the following commands in the Package Manager Console:
+If **(LocalDb)\MSSQLLocalDB** is installed, run the following commands in the Package Manager Console:
+   
 •	**add-migration Initial**
 
 •	**update-database**
-3.	Alternatively, you can manually change the connection string in the **appsettings.json ** file in the TaskTrac.API project and the **AppDbContext.cs** file in the TaskTrac.DAL project (in the Data folder). Then, run the same commands in the Package Manager Console.
+
+Alternatively, 
+
+you can manually change the connection string in the **appsettings.json ** file in the TaskTrac.API project and the **AppDbContext.cs** file in the TaskTrac.DAL project (in the Data folder).
+Then, run the same commands in the Package Manager Console.
+
 These commands will create and update the necessary migrations to set up the database, including tables for tasks, subtasks, and ASP.NET Identity.
+
 **Architecture:**
 TaskTrac follows the N-tier architecture, which is divided into different layers:
 
