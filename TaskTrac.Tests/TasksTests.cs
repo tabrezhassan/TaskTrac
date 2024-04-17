@@ -39,31 +39,35 @@ namespace TaskTrac.Tests
                     Id = 1,
                     Title = "Task 1",
                     Description = "Description for Task 1",
-                    UserId = "880918fc-b89b-4ba4-9c52-bcb241d3caa1"
+                    UserId = "10d0ce15-6844-4a25-813d-8618ca146b7d"
                 },
                 new Tasks
                 {
                     Id = 2,
                     Title = "Task 2",
-                    Description = "Description for Task 2"
+                    Description = "Description for Task 2",
+                    UserId = "10d0ce15-6844-4a25-813d-8618ca146b7d"
                 },
                 new Tasks
                 {
                     Id = 3,
                     Title = "Task 3",
-                    Description = "Description for Task 3"
+                    Description = "Description for Task 3",
+                    UserId = "10d0ce15-6844-4a25-813d-8618ca146b7d"
                 },
                 new Tasks
                 {
                     Id = 4,
                     Title = "Task 4",
-                    Description = "Description for Task 4"
+                    Description = "Description for Task 4",
+                    UserId = "10d0ce15-6844-4a25-813d-8618ca146b7d"
                 },
                 new Tasks
                 {
                     Id = 5,
                     Title = "Task 5",
-                    Description = "Description for Task 5"
+                    Description = "Description for Task 5",
+                    UserId = "10d0ce15-6844-4a25-813d-8618ca146b7d"
                 }
             };
 
@@ -108,92 +112,106 @@ namespace TaskTrac.Tests
         [Test]
         public void GetAllForUser_ValidResult_ShouldReturnListOfTasks()
         {
-            //Arrange
+            // Arrange
             var taskList = MockTasks();
 
-            //Valid user id for testing
+            // Valid user id for testing
             var userId = "10d0ce15-6844-4a25-813d-8618ca146b7d";
             var userName = "test@test.com";
 
-            // Mock HttpContext to simulate a logged-in user
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            // Mock User object with required claims
+            var userClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, userName),
                 new Claim(ClaimTypes.NameIdentifier, userId)
                 // Add any other claims if needed
-            }, "mock"));
+            };
+            var userIdentity = new ClaimsIdentity(userClaims, "mock");
+            var userPrincipal = new ClaimsPrincipal(userIdentity);
 
+            // Mock UserManager and configure it to return user ID when GetUserId is called
+            var mockUserManager = Substitute.For<UserManager<Users>>(
+                Substitute.For<IUserStore<Users>>(), null, null, null, null, null, null, null, null);
+            mockUserManager.GetUserId(userPrincipal).Returns(userId);
+
+            // Mock HttpContext to simulate a logged-in user
             var httpContext = new DefaultHttpContext
             {
-                User = user
+                User = userPrincipal
             };
             var controllerContext = new ControllerContext
             {
                 HttpContext = httpContext
             };
 
+            // Mock the task service
+            //var mockTaskService = Substitute.For<ITaskService>();
             _taskService.GetAllForUser(userId).Returns(taskList);
 
             // Act
-            var controller = CreateController(_taskService, _subTaskService, _userManager);
-            controller.ControllerContext = controllerContext; // Set the controller's context
-
-            try
+            var controller = new TasksController(_taskService, _subTaskService, mockUserManager)
             {
-                var result = controller.GetAllTasksForUser().Result;
+                ControllerContext = controllerContext
+            };
 
-                // Assert
-                var okResult = result as OkObjectResult;
-                Assert.IsNotNull(okResult);
-                Assert.That(okResult.StatusCode, Is.EqualTo(200));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message}");
-                throw;
-            }
+            // Act
+            var result = controller.GetAllTasksForUser().Result;
 
-            ////Mock HttpContext to simulate a logged in user
-            //var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-            //{
-            //    new Claim(ClaimTypes.NameIdentifier, userId),
-            //}, "mock"));
-
-            //var httpContext = new DefaultHttpContext
-            //{
-            //    User = user
-            //};
-
-            //var controllerContext = new ControllerContext
-            //{
-            //    HttpContext = httpContext,
-            //};
-
-            //_taskService.GetAllForUser(userId).Returns(taskList);
-
-            ////Act
-            //var controller = CreateController(_taskService, _subTaskService, _userManager);
-            //controller.ControllerContext = controllerContext;
-
-            //var result = controller.GetAllTasksForUser().Result;
-
-            ////Assert
-            //var okResult = result as OkObjectResult;
-            //Assert.IsNotNull(okResult);
-            //Assert.That(okResult.StatusCode, Is.EqualTo(200));
+            // Assert
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.That(okResult.StatusCode, Is.EqualTo(200));
         }
 
         [Test]
         public void GetAllForUser_InValidResult_ShouldReturnlistOfTasks()
         {
-            //Arrange
-            var taskList = MockTasks();
+            // Arrange
+            var taskList = new List<Tasks>(); // Empty task list to simulate no tasks for the user
 
-            //Act
-            var controller = CreateController(_taskService, _subTaskService, _userManager);
+            // InValid user id for testing
+            var userId = "45878956348744";
+            var userName = "testing@test.com";
+
+            // Mock User object with required claims
+            var userClaims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, userName),
+        new Claim(ClaimTypes.NameIdentifier, userId)
+        // Add any other claims if needed
+    };
+            var userIdentity = new ClaimsIdentity(userClaims, "mock");
+            var userPrincipal = new ClaimsPrincipal(userIdentity);
+
+            // Mock UserManager and configure it to return user ID when GetUserId is called
+            var mockUserManager = Substitute.For<UserManager<Users>>(
+                Substitute.For<IUserStore<Users>>(), null, null, null, null, null, null, null, null);
+            mockUserManager.GetUserId(userPrincipal).Returns(userId);
+
+            // Mock HttpContext to simulate a logged-in user
+            var httpContext = new DefaultHttpContext
+            {
+                User = userPrincipal
+            };
+            var controllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            // Mock the task service to return an empty task list
+            var _taskService = Substitute.For<ITaskService>();
+            _taskService.GetAllForUser(userId).Returns(taskList);
+
+            // Act
+            var controller = new TasksController(_taskService, _subTaskService, mockUserManager)
+            {
+                ControllerContext = controllerContext
+            };
+
+            // Act
             var result = controller.GetAllTasksForUser().Result;
 
-            //Assert
+            // Assert
             var notFoundResult = result as NotFoundObjectResult;
             Assert.IsNotNull(notFoundResult);
             Assert.That(notFoundResult.StatusCode, Is.EqualTo(404));
@@ -238,10 +256,44 @@ namespace TaskTrac.Tests
         [Test]
         public async Task CreateTask_ValidResult_ShouldCreateTask()
         {
-                // Arrange
-                var controller = CreateController(_taskService, _subTaskService, _userManager);
+            // Arrange
 
-                var createTaskDTO = new CreateTaskDTO
+            //Valid user id for testing
+            var userId = "10d0ce15-6844-4a25-813d-8618ca146b7d";
+            var userName = "test@test.com";
+
+            // Mock User object with required claims
+            var userClaims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, userName),
+        new Claim(ClaimTypes.NameIdentifier, userId)
+        // Add any other claims if needed
+    };
+            var userIdentity = new ClaimsIdentity(userClaims, "mock");
+            var userPrincipal = new ClaimsPrincipal(userIdentity);
+
+            // Mock UserManager and configure it to return user ID when GetUserId is called
+            var mockUserManager = Substitute.For<UserManager<Users>>(
+                Substitute.For<IUserStore<Users>>(), null, null, null, null, null, null, null, null);
+            mockUserManager.GetUserId(Arg.Any<ClaimsPrincipal>()).Returns(userId);
+
+            // Mock HttpContext to simulate a logged-in user
+            var httpContext = new DefaultHttpContext
+            {
+                User = userPrincipal
+            };
+            var controllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var controller = new TasksController(_taskService, _subTaskService, mockUserManager)
+            {
+                ControllerContext = controllerContext
+            };
+
+
+            var createTaskDTO = new CreateTaskDTO
                 {
                     Title = "Sample Task",
                     Description = "Sample Description",
@@ -273,7 +325,40 @@ namespace TaskTrac.Tests
         public async Task CreateTask_InValidResult_ShouldCreateTask()
         {
             // Arrange
-            var controller = CreateController(_taskService, _subTaskService, _userManager);
+            // InValid user id for testing
+            var userId = "45878956348744";
+            var userName = "testing@test.com";
+
+            // Mock User object with required claims
+            var userClaims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, userName),
+        new Claim(ClaimTypes.NameIdentifier, userId)
+        // Add any other claims if needed
+    };
+            var userIdentity = new ClaimsIdentity(userClaims, "mock");
+            var userPrincipal = new ClaimsPrincipal(userIdentity);
+
+            // Mock UserManager and configure it to return user ID when GetUserId is called
+            var mockUserManager = Substitute.For<UserManager<Users>>(
+                Substitute.For<IUserStore<Users>>(), null, null, null, null, null, null, null, null);
+            mockUserManager.GetUserId(Arg.Any<ClaimsPrincipal>()).Returns(userId);
+
+            // Mock HttpContext to simulate a logged-in user
+            var httpContext = new DefaultHttpContext
+            {
+                User = userPrincipal
+            };
+            var controllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var controller = new TasksController(_taskService, _subTaskService, mockUserManager)
+            {
+                ControllerContext = controllerContext
+            };
+
 
             var createTaskDTO = new CreateTaskDTO
             {

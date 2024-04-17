@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - TaskTrak</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     @*<link rel="stylesheet" href="~/TaskTrak.PL.styles.css" asp-append-version="true" />*@
 </head>
 <body>
@@ -14,21 +14,21 @@
         <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
                 <img class="navimg" href="#" src="/Assets/HeaderLogo.png" />
-                <div class="collapse navbar-collapse justify-content-center" id="navbarCenteredExample">
 
-                    <ul class="navbar-nav mr-auto">
+                <div class="collapse navbar-collapse" id="navbarCenteredExample">
+                    <ul class="navbar-nav mx-auto">
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" aria-current="page" href="#">HOME</a>
+                            <a class="nav-link text-dark" aria-current="page" href="/home"><i class="fas fa-home"></i> HOME</a>
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tasks" asp-action="Tasks">TASKS</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Tasks" asp-action="Tasks"><i class="fas fa-tasks"></i> TASKS</a>
                         </li>
                     </ul>
 
-                    <ul class="navbar-nav">
-                        <li class="nav-item  ml-auto">
-                            <a class="nav-link text-dark" onclick="logout()">LOGOUT</a>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" onclick="logout()"> LOGOUT <i class="fas fa-sign-out-alt"></i></a>
                         </li>
                     </ul>
                 </div>

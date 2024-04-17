@@ -10,43 +10,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+reister
 </head>
 <body>
-    <form id="registerForm">
-        <div class="row justify-content-center">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row justify-content-center">
-                        <input type="email" name="username" id="username" class="form-control" placeholder="Email" required>
-                    </div>
-                    
-                    <div class="row justify-content-center">
-                        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-                    </div>
+    <div class="container">
+        <form id="registerForm">
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <input type="email" name="username" id="username" class="form-control" placeholder="Email" required>
+                            </div>
 
-                    <div class="row justify-content-center">
-                        <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
-                    </div>
+                            <div class="form-group">
+                                <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                            </div>
 
-                    <!-- Password criteria list -->
-                    <div id="passwordCriteriaList">
-                        <ul>
-                            <li id="nonAlphanumeric">At least one non-alphanumeric character</li>
-                            <li id="lowercase">At least one lowercase letter</li>
-                            <li id="uppercase">At least one uppercase letter</li>
-                        </ul>
-                    </div>
+                            <div class="form-group">
+                                <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
+                            </div>
 
-                </div>
-                <div class="card-footer">
-                    <div class="row justify-content-center">
-                        <input type="submit" class="btn btn-secondary" value="Register" id="register-form-submit">
+                            <!-- Password criteria list -->
+                            <div id="passwordCriteriaList">
+                                <ul class ="no-bullets">
+                                    <li id="nonAlphanumeric">At least one non-alphanumeric character</li>
+                                    <li id="lowercase">At least one lowercase letter</li>
+                                    <li id="uppercase">At least one uppercase letter</li>
+                                </ul>
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <div class="row justify-content-center">
+                                <input type="submit" class="btn btn-outline-secondary" value="Register" id="register-form-submit">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 
     <script>
 
@@ -109,14 +113,6 @@
 
             return hasNonAlphanumeric && hasLowercase && hasUppercase;
 
-            //document.getElementById("nonAlphanumeric").classList.toggle("completed", hasNonAlphanumeric);
-            //document.getElementById("nonAlphanumeric").classList.toggle("not-completed", !hasNonAlphanumeric);
-            //document.getElementById("lowercase").classList.toggle("completed", hasLowercase);
-            //document.getElementById("lowercase").classList.toggle("not-completed", !hasLowercase);
-            //document.getElementById("uppercase").classList.toggle("completed", hasUppercase);
-            //document.getElementById("uppercase").classList.toggle("not-completed", !hasUppercase);
-
-            //return hasNonAlphanumeric && hasLowercase && hasUppercase;
         }
 
         // Event listener to check password criteria on input change

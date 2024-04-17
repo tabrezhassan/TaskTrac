@@ -24,6 +24,10 @@ body {
     margin: 0 auto;
 }
 
+.nav-item {
+    margin-left: 20px; /* Adjust the value as needed */
+}
+
 .table {
     background-color: white;
 }
@@ -54,6 +58,10 @@ body {
 
 .card {
     width:700px;
+}
+
+.card-header, .card-footer {
+    background-color: white;
 }
 
 .footer {
@@ -87,4 +95,13 @@ body {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.no-bullets {
+    list-style-type: none; /* Remove bullet points */
+    padding-left: 0; /* Remove default left padding */
+}
+
+.float-right {
+    float: right;
 }

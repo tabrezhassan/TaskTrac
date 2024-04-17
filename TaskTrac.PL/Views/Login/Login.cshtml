@@ -12,39 +12,46 @@
     <title>Login</title>
 </head>
 <body>
-    <div class="overlay"></div> <!-- Background overlay -->
-
-    <div class="login-card">
-        <form id="loginForm">
-            <div class="row justify-content-center">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Login</h2>
-                        <div class="row justify-content-right">
-                            <a class="btn btn-primary" href="/Login/Register">Register User</a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row justify-content-center">
-                            <input type="email" name="username" id="username" class="form-control" placeholder="Email" required>
-                        </div>
-                        </br>
-                        <div class="row justify-content-center">
-                            <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="row justify-content-center">
-                            <!-- Add spinner element -->
-                            <div class="spinner-border" role="status">
-                                <span class="sr-only">Loading...</span>
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="login-card">
+                    <form id="loginForm">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Login</h2>
+                                <div class="row justify-content-end">
+                                    <a class="btn btn-outline-primary" href="/Login/Register">Register User</a>
+                                </div>
                             </div>
-                            <input type="submit" class="btn btn-secondary" value="Login" id="login-form-submit">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <input type="email" name="username" id="username" class="form-control" placeholder="Email" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row justify-content-center">
+                                    <input type="submit" class="btn btn-outline-secondary" value="Login" id="login-form-submit">
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </body>
 
@@ -53,9 +60,6 @@
 <script>
     document.getElementById("loginForm").addEventListener("submit", function (event) {
         event.preventDefault();
-
-        //Show spinner when login button is clicked
-        document.querySelector('.spinner-border').style.display = 'inline-block';
 
         var formData = {
             Email: document.getElementById("username").value,
@@ -89,9 +93,6 @@
             .catch(error => {
                 console.error('Login Error', error)
             })
-            .finally(() => {
-                //Hides spinner after login process is complete
-                document.querySelector('.spinner-border').style.display = 'none';
-            });
+
     })
 </script>

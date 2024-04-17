@@ -6,7 +6,6 @@ var logoutTimer;
 
 function startLogoutTimer() {
     logoutTimer = setTimeout(logout, logoutTime);
-    console.log(logoutTime);
 }
 
 function resetLogoutTimer() {

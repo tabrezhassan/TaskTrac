@@ -74,7 +74,7 @@ function fetchTasks() {
                 console.log(response);
                 window.location.href = "/Login/Login";
             }
-            return response.json()
+            return response.json();
         })
         .then(data => {
             // Check if data is structured as expected
@@ -92,12 +92,22 @@ function fetchTasks() {
                     <td>${task.description}</td>
                     <td>${formattedDueDate}</td>
                     <td>
-                        <a class="btn btn-outline-secondary btn-sm" href="UpdateTask?id=${task.id}"> Edit</a>
-                        <a class="btn btn-outline-danger btn-sm delete-task" data-task-id="${task.id}"> Delete</a>
+                        <button class="btn btn-outline-secondary btn-sm edit-task" data-task-id="${task.id}"> Edit <i class="fas fa-edit"></i></button>
+                        <a class="btn btn-outline-danger btn-sm delete-task" data-task-id="${task.id}"> Delete <i class="fas fa-trash-alt"></i></a>
                     </td
                 `;
                     taskList.appendChild(row);
                 });
+
+                //Adds event listner for the Delete button
+                document.addEventListener("click", function (event) {
+                    const editButton = event.target.closest('.edit-task');
+                    if (editButton) {
+                        event.preventDefault();
+                        const taskId = editButton.dataset.taskId;
+                        window.location.href = `UpdateTask?id=${taskId}`;
+                    }
+                })
 
                 //Adds event listner for the Delete button
                 document.addEventListener("click", function (event) {

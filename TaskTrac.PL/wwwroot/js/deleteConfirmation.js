@@ -88,8 +88,16 @@ async function showDeleteConfirmation(itemId, itemType) {
     // Check if itemType is 'task' and if it has associated subtasks
     if (itemType === 'Tasks' && await hasSubtasks(itemId)) {
         // If task has subtasks, display a message and return without showing the delete confirmation
-        displayToast("Cannot delete task with subtasks.");
+        displayToast('Delete Task', 'Cannot delete task with subtasks.', 'warning');
         return;
+    }
+
+    // Customize confirmation message based on item type
+    let confirmationMessage = '';
+    if (itemType === 'Tasks') {
+        confirmationMessage = 'Are you sure you want to delete this task?';
+    } else if (itemType === 'SubTasks') {
+        confirmationMessage = 'Are you sure you want to delete this subtask?';
     }
 
     // Create the toast element
@@ -116,14 +124,6 @@ async function showDeleteConfirmation(itemId, itemType) {
     // Create the toast body
     const toastBody = document.createElement('div');
     toastBody.classList.add('toast-body');
-
-    // Customize confirmation message based on item type
-    let confirmationMessage = '';
-    if (itemType === 'Tasks') {
-        confirmationMessage = 'Are you sure you want to delete this task?';
-    } else if (itemType === 'SubTasks') {
-        confirmationMessage = 'Are you sure you want to delete this subtask?';
-    }
 
     const textNode = document.createTextNode(confirmationMessage);
 

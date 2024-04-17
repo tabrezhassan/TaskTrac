@@ -9,7 +9,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Task</title>
+    <title>Update Task</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <form id="updateTaskForm">
@@ -18,7 +19,7 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header">
-                            <a href="/Tasks/Tasks" class="btnBackToList float-right"><i class="fas fa-times" style="color:#E63946"></i></a>
+                            <a href="/Tasks/Tasks" class="btn btn-outline-secondary float-right">Back to Tasks <i class="fas fa-angle-double-right" style="color:#E63946"></i></a>
                             <h2>NEW TASK</h2>
                         </div>
                         <div class="card-body">
@@ -116,10 +117,10 @@
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">Close</button>
                             </div>
                             <div class="col">
-                                <button id="AddSubTask" type="button" class="btn btn-outline-primary" data-action="add" data-subtaskId="">Save</button>
+                                <button id="AddSubTask" type="button" class="btn btn-outline-primary w-100" data-action="add" data-subtaskId="">Save</button>
                             </div>
                         </div>
                     </div>
@@ -128,8 +129,457 @@
         </div>
     </div>
 </body>
-<script type="module" src="~/js/updateTask.js"></script>
+@*<script type="module" src="~/js/updateTask.js"></script>*@
 <script type="module" src="~/js/deleteConfirmation.js"></script>
 </html>
+<script>
 
+    function getToken() {
+        const token = localStorage.getItem("token");
+        const expiration = localStorage.getItem("expiration");
+
+        if (!token) {
+            return null;
+        }
+
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (expiration < currentTime) {
+            //token has expired
+            localStorage.removeItem("token");
+            return null;
+        }
+
+        return token;
+    }
+
+    // Function to format the date (yyyy/MM/dd)
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}/${month}/${day}`;
+    }
+
+    const URLtaskId = new URLSearchParams(window.location.search);
+    const taskId = URLtaskId.get('id');
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById("updateTaskForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // Extract task ID from URL query parameter
+            const URLtaskId = new URLSearchParams(window.location.search);
+            const taskIdToUpdate = URLtaskId.get('id');
+
+            // Get input values
+            const title = document.getElementById("title").value;
+            const description = document.getElementById("description").value;
+
+            // Parse the date and adjust for timezone offset
+            const dueDate = new Date(document.getElementById("dueDate").value);
+            const timezoneOffset = dueDate.getTimezoneOffset() * 60000; // Convert minutes to milliseconds
+            const localDueDate = new Date(dueDate.getTime() - timezoneOffset);
+
+            // Format the dueDate into "yyyy-mm-dd"
+            const formattedDueDate = localDueDate.toISOString().split('T')[0];
+
+            document.getElementById("dueDate").value = formattedDueDate;
+
+            // Get JWT token and returns a promise
+            const token = getToken();
+            const headers = { "Content-Type": "application/json" };
+
+            // Prepare headers with content type and authorization if token available
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`;
+            }
+
+            fetch(`https://localhost:8000/api/Tasks/${taskIdToUpdate}`, {
+                method: "PUT",
+                headers: headers,
+
+                body: JSON.stringify({
+                    title: title,
+                    description: description,
+                    dueDate: dueDate
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to Update Task");
+                    }
+
+                    window.location.href = "Tasks/Tasks";
+                })
+                .catch(error => console.error("Error updating Task", error));
+        });
+
+        document.getElementById("AddSubTask").addEventListener("click", function () {
+            const subtaskId = document.querySelector("#subTaskModal #subTaskId").value;
+
+            if (subtaskId === '0') {
+                createTask();
+            } else {
+                updateSubtask(subtaskId);
+            }
+        });
+
+        //Gets the JWT token
+        const token = getToken();
+        const headers = { "Content-Type": "application/json" };
+
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        // Fetch Task details
+        fetch(`https://localhost:8000/api/Tasks/${taskId}`, {
+            method: "GET",
+            headers: headers
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch task details");
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("title").value = data.title;
+                document.getElementById("description").value = data.description
+
+                // Parse the date and adjust for timezone offset
+                const dueDate = new Date(data.dueDate);
+                const timezoneOffset = dueDate.getTimezoneOffset() * 60000; // Convert minutes to milliseconds
+                const localDueDate = new Date(dueDate.getTime() - timezoneOffset);
+
+                // Format the dueDate into "yyyy-mm-dd"
+                const formattedDueDate = localDueDate.toISOString().split('T')[0];
+
+                document.getElementById("dueDate").value = formattedDueDate;
+            })
+            .catch(error => console.error("Error fetching task details", error));
+
+        // Fetch subtasks for the task
+        fetch(`https://localhost:8000/api/Tasks/subtasks?taskId=${taskId}`, {
+            method: "GET",
+            headers: headers
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch sub tasks for task");
+                }
+                return response.json();
+            })
+            .then(data => {
+                const subtasks = data.$values; // Accessing the array of subtasks
+                const subTaskList = document.getElementById("subTaskList");
+                subTaskList.innerHTML = "";
+
+                // Check if subtasks is an array
+                if (Array.isArray(subtasks)) {
+                    // Iterate over each subtask
+                    subtasks.forEach(subtask => {
+                        // Format the date as yyyy/MM/dd
+                        const formattedDueDate = formatDate(subtask.dueDate);
+                        const row = document.createElement("tr");
+                        // Fill data into table cells
+                        row.innerHTML = `
+                                            <td hidden>${subtask.id}</td>
+                                            <td>${subtask.title}</td>
+                                            <td>${subtask.description}</td>
+                                            <td>${formattedDueDate}</td>
+                                            <td>
+                                                <a class="btn btn-outline-secondary btn-sm edit-subtask" href="#" data-subtask-Id="${subtask.id}"><i class="fas fa-edit"></i>Edit</a>
+                                                <a class="btn btn-outline-danger btn-sm delete-subtask" data-subtask-id="${subtask.id}"><i class="fas fa-trash-alt"></i>Delete</a>
+                                            </td>
+                                        `;
+                        subTaskList.appendChild(row);
+                    });
+
+                    // Event listener for the Sub Task Edit button in the table
+                    document.getElementById('subTaskList').addEventListener('click', function (event) {
+                        const editButton = event.target.closest('.edit-subtask');
+                        if (editButton) {
+                            event.preventDefault();
+                            const subtaskId = editButton.dataset.subtaskId;
+                            getSubTaskById(subtaskId);
+                        }
+                    })
+
+                    //Adds event listner for the Sub Task Delete button
+                    document.addEventListener("click", function (event) {
+                        const deleteButton = event.target.closest('.delete-subtask');
+                        if (deleteButton) {
+                            event.preventDefault();
+                            const subtaskId = deleteButton.dataset.subtaskId;
+                            showDeleteConfirmation(subtaskId);
+                        }
+                    })
+                }
+                else {
+                    console.log(subtasks)
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching Tasks', error);
+            });
+    });
+
+
+    function getSubTaskById(subtaskId) {
+        //Gets the JWT token
+        const token = getToken();
+        const headers = { "Content-Type": "application/json" };
+
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        //Once token is obtained, GET request is made to create task
+        fetch(`https://localhost:8000/api/SubTasks?id=${subtaskId}`, {
+            method: "GET",
+            headers: headers
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch subtask details');
+                }
+                return response.json();
+            })
+            .then(subtask => {
+                // Format the date as yyyy/MM/dd
+                const dueDate = new Date(subtask.dueDate);
+                const timezoneOffset = dueDate.getTimezoneOffset() * 60000; // Convert minutes to milliseconds
+                const localDueDate = new Date(dueDate.getTime() - timezoneOffset);
+
+                // Format the dueDate into "yyyy-mm-dd"
+                const formattedDueDate = localDueDate.toISOString().split('T')[0];
+
+                // Populate modal with subtask data
+                document.querySelector("#subTaskModal #subTaskTitle").value = subtask.title;
+                document.querySelector("#subTaskModal #subTaskDescription").value = subtask.description;
+                document.querySelector("#subTaskModal #subTaskDueDate").value = formattedDueDate; // Use formattedDueDate here
+                document.querySelector("#subTaskModal #subTaskId").value = subtask.id;
+
+
+                document.querySelector("#subTaskModal #AddSubTask").addEventListener("click", function () {
+                    updateSubtask(subtaskId)
+                });
+
+                const modal = new bootstrap.Modal(document.getElementById('subTaskModal'));
+                modal.show();
+            })
+            .catch(error => console.error("Error creating sub task", error))
+    }
+
+    function createTask() {
+
+
+        // Extract task ID from URL query parameter
+        const URLtaskId = new URLSearchParams(window.location.search);
+        const taskId = URLtaskId.get('id');
+
+        const updatedTitle = document.querySelector("#subTaskTitle").value;
+        const updatedDescription = document.querySelector("#subTaskDescription").value;
+        const updatedDueDate = document.querySelector("#subTaskDueDate").value;
+
+        //Gets the JWT token
+        const token = getToken();
+        const headers = { "Content-Type": "application/json" };
+
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        //Once token is obtained, POST request is made to create task
+        fetch(`https://localhost:8000/api/Tasks/subtasks?taskId=${taskId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+
+            body: JSON.stringify({
+                title: updatedTitle,
+                description: updatedDescription,
+                dueDate: updatedDueDate
+            })
+        })
+            .then(response => response.json)
+            .then(data => {
+                window.location.href = "Tasks/Tasks";
+            })
+            .catch(error => console.error("Error creating sub task", error))
+    }
+
+    function updateSubtask(subtaskId) {
+
+        // Extract task ID from URL query parameter
+        const URLtaskId = new URLSearchParams(window.location.search);
+        const taskId = URLtaskId.get('id');
+
+        const title = document.querySelector("#subTaskModal #subTaskTitle").value;
+        const description = document.querySelector("#subTaskModal #subTaskDescription").value;
+        const dueDate = document.querySelector("#subTaskModal #subTaskDueDate").value;
+
+        //Gets the JWT token
+        const token = getToken();
+        const headers = { "Content-Type": "application/json" };
+
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        fetch(`https://localhost:8000/api/SubTasks/${subtaskId}`, {
+            method: "PUT",
+            headers: headers,
+
+            body: JSON.stringify({
+                title: title,
+                description: description,
+                dueDate: dueDate
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update subtask');
+                }
+                const modal = document.getElementById('subTaskModal');
+                const bootstrapModal = bootstrap.Modal.getInstance(modal);
+                bootstrapModal.hide();
+
+                window.location.reload()/*href = `/UpdateTask?id=${taskId}`*/;
+                return response.json();
+            })
+            .catch(error => console.error("Error updating Task", error));
+    }
+
+
+    function showDeleteConfirmation(itemId) {
+
+        // Create the toast element
+        const toastElement = document.createElement('div');
+        toastElement.classList.add('toast', 'toast-custom');
+        toastElement.setAttribute('role', 'alert');
+        toastElement.setAttribute('aria-live', 'assertive');
+        toastElement.setAttribute('aria-atomic', 'true');
+
+        // Create the toast header
+        const toastHeader = document.createElement('div');
+        toastHeader.classList.add('toast-header');
+
+        const strong = document.createElement('strong');
+        strong.classList.add('mr-auto');
+        strong.textContent = 'Confirm Delete';
+
+        const closeSpan = document.createElement('span');
+        closeSpan.setAttribute('aria-hidden', 'true');
+        closeSpan.innerHTML = '&times;';
+
+        toastHeader.appendChild(strong);
+
+        // Create the toast body
+        const toastBody = document.createElement('div');
+        toastBody.classList.add('toast-body');
+
+        // Customize confirmation message based on item type
+        let confirmationMessage = '';
+        confirmationMessage = 'Are you sure you want to delete this subtask?';
+
+        const textNode = document.createTextNode(confirmationMessage);
+
+        // Create the toast footer
+        const toastFooter = document.createElement('div');
+        toastFooter.classList.add('toast-footer', 'toastFooter');
+
+        // Create the Yes and No buttons
+        const confirmButton = document.createElement('button');
+        confirmButton.setAttribute('type', 'button');
+        confirmButton.classList.add('btn', 'btn-outline-success', 'ml-4', 'confirm-delete');
+        confirmButton.textContent = 'Yes';
+
+        const cancelButton = document.createElement('button');
+        cancelButton.setAttribute('type', 'button');
+        cancelButton.classList.add('btn', 'btn-outline-warning', 'ml-4', 'cancel-delete');
+        cancelButton.textContent = 'No';
+
+        toastBody.appendChild(textNode);
+
+        // Append buttons to footer
+        toastFooter.appendChild(confirmButton);
+        toastFooter.appendChild(cancelButton);
+
+        // Append header and body to toast
+        toastElement.appendChild(toastHeader);
+        toastElement.appendChild(toastBody);
+        toastElement.appendChild(toastFooter)
+
+        // Append toast to the document
+        document.body.appendChild(toastElement);
+
+        // Show the toast
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+
+        // Add event listener for confirm and cancel buttons
+        confirmButton.addEventListener('click', function () {
+            deleteItem(itemId);
+            toast.hide();
+        });
+
+        cancelButton.addEventListener('click', function () {
+            toast.hide();
+        });
+    }
+
+    function hasSubtasks(taskId) {
+
+
+        const token = getToken();
+        const headers = { "Content-Type": "application/json" };
+
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        const response = fetch(`https://localhost:8000/api/Tasks/subtasks?taskId=${taskId}`, {
+            method: "GET",
+            headers: headers,
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch subtasks");
+        }
+
+        const subtasks = response.json();
+        return subtasks && subtasks.$values.length > 0;
+    }
+
+    function deleteItem(itemId) {
+        // Get JWT token and returns a promise
+        const token = getToken();
+        const headers = { "Content-Type": "application/json" };
+
+        // Prepare headers with content type and authorization if token available
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        fetch(`https://localhost:8000/api/SubTasks/${itemId}`, {
+            method: "DELETE",
+            headers: headers,
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to delete SubTask`);
+                }
+
+                location.reload();
+            })
+            .catch(error => {
+                console.error(`Error deleting SubTask`, error)
+            });
+    }
+</script>
 

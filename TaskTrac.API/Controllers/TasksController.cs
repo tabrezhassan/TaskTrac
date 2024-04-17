@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using TaskTrac.API.DTO;
 using TaskTrac.BLL.Interfaces;
 using TaskTrac.DAL.Models;
@@ -37,6 +38,10 @@ namespace TaskTrac.API.Controllers
                 string userId = _userManager.GetUserId(User);
                 var tasks = await _taskService.GetAllForUser(userId);
 
+                if (tasks == null || tasks.Count == 0)
+                {
+                    return NotFound($"No tasks found for user");
+                }
                 return Ok(tasks);
             }
             catch (Exception ex)

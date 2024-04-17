@@ -10,6 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Task</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <form id="createTaskForm">
@@ -18,7 +19,7 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header">
-                            <a href="/Tasks/Tasks" class="btnBackToList float-right"><i class="fas fa-times" style="color:#E63946"></i></a>
+                            <a href="/Tasks/Tasks" class="btn btn-outline-secondary float-right">Back to Tasks <i class="fas fa-angle-double-right" style="color:#E63946"></i></a>
                             <h2>NEW TASK</h2>
                         </div>
                         <div class="card-body">
@@ -42,7 +43,7 @@
                         </div>
                         <div class="card-footer">
                             <div class="row justify-content-center">
-                                <input type="submit" class="btn btn-secondary" id="createTask-form-submit">
+                                <input type="submit" class="btn btn-outline-secondary" id="createTask-form-submit">
                             </div>
                         </div>
                     </div>
@@ -53,40 +54,35 @@
 
     <br>
 
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <a href="/Tasks/Tasks" class="btnBackToList float-right"><i class="fas fa-times" style="color:#E63946"></i></a>
-                    <h2>SUB TASKS</h2>
-                </div>
-                <div class="card-body">
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        Launch demo modal
-                    </button>
-                    <br>
-                    <table class="table table-bg" id="table">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" hidden>ID</th>
-                                <th scope="col">TITLE</th>
-                                <th scope="col">DESCRIPTION</th>
-                                <th scope="col">DUE DATE</th>
-                                <th>ACTIONS</th>
-                            </tr>
-                        </thead>
-                        <tbody id="subTaskList">
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer">
-                </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <h2>SUB TASKS</h2>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#subTaskModal">
+                    NEW SUB TASK
+                </button>
+                <br>
+                <table class="table table-bg" id="table">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" hidden>ID</th>
+                            <th scope="col">TITLE</th>
+                            <th scope="col">DESCRIPTION</th>
+                            <th scope="col">DUE DATE</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subTaskList">
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
     <div class="modal fade" id="subTaskModal" tabindex="-1" aria-labelledby="subTaskModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -123,10 +119,10 @@
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">Close</button>
                             </div>
                             <div class="col">
-                                <button id="AddSubTask" type="button" class="btn btn-outline-primary" data-action="add" data-subtaskId="">Save</button>
+                                <button id="AddSubTask" type="button" class="btn btn-outline-primary w-100" data-action="add" data-subtaskId="">Save</button>
                             </div>
                         </div>
                     </div>
