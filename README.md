@@ -31,7 +31,7 @@ Then, run the same commands in the Package Manager Console.
 
 These commands will create and update the necessary migrations to set up the database, including tables for tasks, subtasks, and ASP.NET Identity.
 
-**Architecture:**
+## Architecture:
 TaskTrac follows the N-tier architecture, which is divided into different layers:
 
 ### Data Access Layer (DAL):
