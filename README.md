@@ -1,7 +1,9 @@
 # Project Overview: TaskTrac
 TaskTrac is a task management system designed to streamline task organization and collaboration. 
 
-It enables users to create tasks and add subtasks to effectively manage their projects. 
+It enables users to create tasks and add subtasks to effectively manage their projects.
+
+For ease of use, users can create a task and also add subtasks to the newly created task without leaving the page. These subtasks can also be edited.
 
 To ensure data privacy, users can only view and manage their own tasks. Additionally, to enhance security, users are automatically logged out after a period of inactivity.
 
